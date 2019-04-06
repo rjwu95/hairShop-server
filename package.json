@@ -1,0 +1,30 @@
+{
+  "name": "hairshop-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rjwu95/hairShop-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rjwu95/hairShop-server/issues"
+  },
+  "homepage": "https://github.com/rjwu95/hairShop-server#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "helmet": "^3.16.0",
+    "log4js": "^4.1.0",
+    "morgan": "^1.9.1"
+  }
+}
