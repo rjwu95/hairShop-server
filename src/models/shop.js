@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-var menuSchema = require('./menus').menuSchema;
-var reviewSchema = require('./reviews').reviewSchema;
 
 const Schema = mongoose.Schema;
 
@@ -9,8 +7,8 @@ const shopSchema = new Schema({
   address: String,
   category: String,
   rating: Number,
-  menu: [new shopSchema(menuSchema)],
-  review: [new Schema(reviewSchema)],
+  menu: [{ name: String, price: Number }],
+  review: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
   image: [String],
 });
-module.exports = mongoose.model('shop', shopSchema);
+module.exports = mongoose.model('Shop', shopSchema);
