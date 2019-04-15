@@ -121,8 +121,8 @@ async function imageScrap(url) {
   }
 
   try {
-    await page.waitForSelector('div.eg-flick-container', { timeout: 5000 });
-    let imageWrapper = await page.$('div.eg-flick-container');
+    await page.waitForSelector('div.list_photo', { timeout: 5000 });
+    let imageWrapper = await page.$('div.list_photo');
     let imageFrames = await imageWrapper.$$eval('div.thumb', frames =>
       frames.map(el => el.childNodes[0].src),
     );
