@@ -121,19 +121,11 @@ async function imageScrap(url) {
   }
 
   try {
-    await page.waitForSelector('div.flick_wrapper', { timeout: 5000 });
-    let imageWrapper = await page.$('div.flick_wrapper');
+    await page.waitForSelector('div.eg-flick-container', { timeout: 5000 });
+    let imageWrapper = await page.$('div.eg-flick-container');
     let imageFrames = await imageWrapper.$$eval('div.thumb', frames =>
       frames.map(el => el.childNodes[0].src),
     );
-    // imageFrames = await imageWrapper.childFrames();
-
-    // for (let ele of imageFrames) {
-    //   console.log('imageFrames 확인', imageFrames);
-    //   await ele.$eval('img', el => {
-    //     images.push(el.src);
-    //   });
-    // }
     for (let i = 0; i < 5 && i < imageFrames.length; i++) {
       images.push(imageFrames[i]);
     }
