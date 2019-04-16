@@ -10,5 +10,10 @@ const shopSchema = new Schema({
   menu: Object,
   review: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
   image: [String],
+  contact: String,
+  homepage: String,
+  openingHours: [String],
+  location: Object,
+  tags: [String],
 });
 module.exports = mongoose.model('Shop', shopSchema);
