@@ -149,7 +149,8 @@ async function hairShopScrap(url) {
   let browser = await puppeteer.launch({});
 
   console.log('샵 스크랩 시작');
-  let category, hairShopName, location, contact, homepage;
+  let category, hairShopName, contact, homepage;
+  let location = {};
   let address = [];
   let imageUrls = [];
   let menu = [];
