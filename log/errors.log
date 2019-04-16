@@ -1,0 +1,17 @@
+[2019-04-16T21:56:21.461] [ERROR] Shops - ReferenceError: b is not defined
+    at route.get (/home/yugeon/sideProject/hairShop/hairShop-server/src/route/api/shop.js:14:17)
+    at Layer.handle [as handle_request] (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/layer.js:95:5)
+    at /home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:281:22
+    at param (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:354:14)
+    at param (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:365:14)
+    at Function.process_params (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:410:3)
+    at next (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:275:10)
+    at Function.handle (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:174:3)
+    at router (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:317:13)
+    at /home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/home/yugeon/sideProject/hairShop/hairShop-server/node_modules/express/lib/router/index.js:335:12)
