@@ -23,8 +23,8 @@ route.get('/getShops/:region', async (req, res) => {
 
 route.get('/currentLocation', async (req, res) => {
   try {
-    const { latitude, longitude } = req.headers;
-
+    let { latitude, longitude } = req.headers;
+    [latitude, longitude] = [Number(latitude), Number(longitude)];
     const sLat = latitude - LAT_DISTANCE;
     const sLng = longitude - LNG_DISTANCE;
     const eLat = latitude + LAT_DISTANCE;
