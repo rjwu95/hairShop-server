@@ -250,23 +250,41 @@ async function hairShopScrap(url) {
   }
 
   /* Save to the database */
-  shop.find({ name: hairShopName }, (err, data) => {
-    if (err) console.log(err);
-    if (data.length === 0) {
-      shop.create({
-        name: hairShopName,
-        address,
-        category,
-        menu,
-        image: imageUrls,
-        contact,
-        homepage,
-        openingHours,
-        location,
-      });
-    }
-    console.log('들어감!', hairShopName);
-  });
+  // shop.find({ name: hairShopName }, (err, data) => {
+  //   if (err) console.log(err);
+  //   if (data.length === 0) {
+  //     shop.create({
+  //       name: hairShopName,
+  //       address,
+  //       category,
+  //       menu,
+  //       image: imageUrls,
+  //       contact,
+  //       homepage,
+  //       openingHours,
+  //       location,
+  //     });
+  //   }
+  //   console.log('들어감!', hairShopName);
+  // });
+  shop.updateOne(
+    { name: hairShopName },
+    {
+      name: hairShopName,
+      address,
+      category,
+      menu,
+      image: imageUrls,
+      contact,
+      homepage,
+      openingHours,
+      location,
+    },
+    (err, data) => {
+      if (err) console.log(err);
+      console.log('들어감!', hairShopName);
+    },
+  );
 
   await page.close();
   await browser.close();

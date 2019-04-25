@@ -4,6 +4,9 @@ const Shop = require('../../models/shop');
 
 const logger = getLogger('Shops');
 
+const LAT_DISTANCE = 0.0018; // 약 200m
+const LNG_DISTANCE = 0.00227; // 약 200m
+
 // getShops
 route.get('/getShops/:region', async (req, res) => {
   try {
@@ -13,6 +16,25 @@ route.get('/getShops/:region', async (req, res) => {
       address: new RegExp(new RegExp(region)),
     });
     return res.status(200).send(result);
+  } catch (err) {
+    return logger.log(err);
+  }
+});
+
+route.get('/currentLocation', async (req, res) => {
+  try {
+    const { latitude, longitude } = req.headers;
+
+    const sLat = latitude - LAT_DISTANCE;
+    const sLng = longitude - LNG_DISTANCE;
+    const eLat = latitude + LAT_DISTANCE;
+    const eLng = longitude + LNG_DISTANCE;
+
+    const shopList = await Shop.find({
+      'location.lat': { $gte: sLat, $lte: eLat },
+      'location.lng': { $gte: sLng, $lte: eLng },
+    });
+    return res.status(200).send(shopList);
   } catch (err) {
     return logger.log(err);
   }
