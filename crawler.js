@@ -6,7 +6,8 @@ const { mongodbHost, mapApiKey } = require('./config/mongoose.json');
 const axios = require('axios');
 
 mongoose.connect(mongodbHost, {
-  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useNewUrlParser: true
 });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -36,15 +37,13 @@ var shop = mongoose.model('Shop', shopSchema);
 /* crawaling */
 
 // 크롤링 실행
-(async function() {
-  await urlScrap();
-})();
-////////////////////////////////
+urlScrap();
+
 async function urlScrap() {
-  let browser = await puppeteer.launch({});
+  let browser = await puppeteer.launch();
   let page = await browser.newPage();
 
-  for (let j = 1; j <= 2499; j++) {
+  for (let j = 1; j <= 50; j++) {
     console.log('page :', j);
     try {
       await page.goto(
@@ -53,7 +52,7 @@ async function urlScrap() {
       try {
         await page.waitFor('li.list_item');
       } catch (err) {
-        if (err) console.log(err);
+        console.log(err);
         await page.goto(
           `https://store.naver.com/hairshops/list?page=${j}&query=%EB%AF%B8%EC%9A%A9%EC%8B%A4`,
         );
@@ -63,19 +62,11 @@ async function urlScrap() {
         //take url from each hairShop list
         await page.waitFor(1000);
 
-        try {
-          let url = await shop.$eval('a', function(el) {
-            return el.href.match(/.*entry=pll/)[0];
-          });
-          //////////////////////////////////
-          await hairShopScrap(url);
-          //////////////////////////////////
-        } catch (err) {
-          if (err) console.log(err);
-        }
+        let url = await shop.$eval('a', el => el.href.match(/.*entry=pll/)[0]);
+        await hairShopScrap(url);
       }
     } catch (err) {
-      if (err) console.log(err);
+      console.log(err);
     }
   }
   await page.close();
@@ -85,16 +76,11 @@ async function urlScrap() {
 //////////////////////////////////////////
 const priceScrap = async url => {
   let menu = {};
-  let browser = await puppeteer.launch({});
-
+  let browser = await puppeteer.launch();
   let page = await browser.newPage();
+
   try {
     await page.goto(url);
-  } catch (err) {
-    console.log(err);
-  }
-
-  try {
     await page.waitForSelector('div.list_txt_menu_area', { timeout: 5000 });
     let priceLists = await page.$$('div.list_txt_menu_area');
 
@@ -117,17 +103,13 @@ const priceScrap = async url => {
 };
 
 async function imageScrap(url) {
-  let browser = await puppeteer.launch({});
+  let browser = await puppeteer.launch();
+  let page = await browser.newPage();
 
   let images = [];
-  let page = await browser.newPage();
-  try {
-    await page.goto(url);
-  } catch (err) {
-    console.log(err);
-  }
 
   try {
+    await page.goto(url);
     await page.waitForSelector('div.list_photo', { timeout: 5000 });
     let imageWrapper = await page.$('div.list_photo');
     let imageFrames = await imageWrapper.$$eval('div.thumb', frames =>
@@ -145,8 +127,8 @@ async function imageScrap(url) {
 }
 
 async function hairShopScrap(url) {
-  // console.log('priceprice', priceScrap);
-  let browser = await puppeteer.launch({});
+  let browser = await puppeteer.launch();
+  let page = await browser.newPage();
 
   console.log('샵 스크랩 시작');
   let category, hairShopName;
@@ -157,15 +139,10 @@ async function hairShopScrap(url) {
   let imageUrls = [];
   let menu = [];
   let openingHours = [];
-  let page = await browser.newPage();
-  try {
-    await page.goto(url);
-  } catch (err) {
-    if (err) console.log(err);
-  }
 
   /* Restaurant Name */
   try {
+    await page.goto(url);
     await page.waitForSelector('div.biz_name_area', { timeout: 5000 });
     let title = await page.$('div.biz_name_area');
     hairShopName = await title.$eval('strong.name', function(el) {
@@ -173,7 +150,7 @@ async function hairShopScrap(url) {
     });
     category = '미용실';
   } catch (err) {
-    if (err) console.log(err);
+    console.log(err);
   }
 
   /* address */
@@ -181,25 +158,13 @@ async function hairShopScrap(url) {
     await page.waitForSelector('div.list_bizinfo', { timeout: 5000 });
     let info = await page.$('div.list_bizinfo');
 
-    try {
-      contact = await info.$eval('div.list_item_biztel', div => div.innerText);
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      homepage = await info.$eval('a.biz_url', a => a.href);
-    } catch (err) {
-      console.log(err);
-    }
-
-    try {
-      openingHours = await info.$$eval('span.time', times =>
-        times.map(el => el.innerText),
-      );
-    } catch (err) {
-      console.log(err);
-    }
+    const temp = await info.$eval('div.txt', div => div.innerText);
+    const matchedNotNumberAndDash = temp.match(/(?=[^0-9])(?=[^-])/)
+    if (!matchedNotNumberAndDash) contact = temp
+    homepage = await info.$eval('a.biz_url', a => a.href);
+    openingHours = await info.$$eval('span.time', times =>
+      times.map(el => el.innerText),
+    );
 
     address = await info.$$eval('span.addr', el => {
       let temp = el.map(element => element.innerText);
@@ -230,19 +195,9 @@ async function hairShopScrap(url) {
     });
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i] === '가격') {
-        //////////////////
-        try {
-          menu = await priceScrap(url + '&tab=price');
-        } catch (err) {
-          console.log(err);
-        }
-        //////////////////////
+        menu = await priceScrap(url + '&tab=price');
       } else if (tabs[i] === '사진요약') {
-        try {
-          imageUrls = await imageScrap(url + '&tab=photo');
-        } catch (err) {
-          console.log(err);
-        }
+        imageUrls = await imageScrap(url + '&tab=photo');
       }
     }
   } catch (err) {
@@ -250,41 +205,41 @@ async function hairShopScrap(url) {
   }
 
   /* Save to the database */
-  // shop.find({ name: hairShopName }, (err, data) => {
-  //   if (err) console.log(err);
-  //   if (data.length === 0) {
-  //     shop.create({
-  //       name: hairShopName,
-  //       address,
-  //       category,
-  //       menu,
-  //       image: imageUrls,
-  //       contact,
-  //       homepage,
-  //       openingHours,
-  //       location,
-  //     });
-  //   }
-  //   console.log('들어감!', hairShopName);
-  // });
-  shop.updateOne(
-    { name: hairShopName },
-    {
-      name: hairShopName,
-      address,
-      category,
-      menu,
-      image: imageUrls,
-      contact,
-      homepage,
-      openingHours,
-      location,
-    },
-    (err, data) => {
-      if (err) console.log(err);
-      console.log('들어감!', hairShopName);
-    },
-  );
+  shop.find({ name: hairShopName }, (err, data) => {
+    if (err) console.log(err);
+    if (data.length === 0) {
+      shop.create({
+        name: hairShopName,
+        address,
+        category,
+        menu,
+        image: imageUrls,
+        contact,
+        homepage,
+        openingHours,
+        location,
+      });
+    }
+    console.log('들어감!', hairShopName);
+  });
+  // shop.updateOne(
+  //   { name: hairShopName },
+  //   {
+  //     name: hairShopName,
+  //     address,
+  //     category,
+  //     menu,
+  //     image: imageUrls,
+  //     contact,
+  //     homepage,
+  //     openingHours,
+  //     location,
+  //   },
+  //   (err, data) => {
+  //     if (err) console.log(err);
+  //     console.log('들어감!', hairShopName);
+  //   },
+  // );
 
   await page.close();
   await browser.close();

@@ -27,7 +27,8 @@ app.get('/', (req, res) => {
 });
 
 mongoose.connect(config.mongodbHost, {
-  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useNewUrlParser: true
 });
 // var MyModel = mongoose.model('Test', new Schema({ name: String }));
 // MyModel.findOne((err, result) => console.log(result));
